@@ -1,9 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+import axios from '../../axios';
 //
 //
 //
 //
 //
+export const fetchPosts = createAsyncThunk(
+	'posts/fetchPosts', async () => {
+		const { data } = await axios.get('/posts')
+		return data;
+	}
+)
+
+export const fetchTags = createAsyncThunk(
+	'posts/fetchTags', async () => {
+		const { data } = await axios.get('/tags')
+		return data;
+	}
+)
+
 export const postsSlice = createSlice({
 	name: 'posts',
 	initialState: {
@@ -21,9 +37,23 @@ export const postsSlice = createSlice({
 		decrement: (state) => {
 			state.value -= 1
 		},
+
+	},
+	extraReducers: {
+		[fetchPosts.pending]: (state) => {
+			state.posts.items = [];
+			state.posts.status = 'loading';
+		},
+		[fetchPosts.fulfilled]: (state, action) => {
+			state.posts.items = action.payload;
+			state.posts.status = 'loaded';
+		},
+		[fetchPosts.rejected]: (state) => {
+			state.posts.items = [];
+			state.posts.status = 'error';
+		},
 	},
 })
 
-// export const { } = postsSlice.actions
 
 export default postsSlice.reducer
