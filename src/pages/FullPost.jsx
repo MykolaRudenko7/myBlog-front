@@ -1,50 +1,68 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
-import { Post } from "../components/Post";
+import axios from "../axios";
 import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
-
+import { Post } from "../components/Post";
+//
+//
+//
+//
+//
 export const FullPost = () => {
+
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [data, setData] = React.useState({})
+  const { id } = useParams() // id із строки
+
+  React.useEffect(() => {
+    axios.get(`/posts/${id}`)
+      .then((response) => {
+        setData(response.data)
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+        alert('Помилкам при отриманні статті')
+      })
+  }, [])
+
+  if (isLoading) {
+    return <Post isLoading={isLoading} isFullPost />
+  }
   return (
     <>
       <Post
-        id={1}
-        title="Roast the code #1 | Rock Paper Scissors"
-        imageUrl="https://res.cloudinary.com/practicaldev/image/fetch/s--UnAfrEG8--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/icohm5g0axh9wjmu4oc3.png"
-        user={{
-          avatarUrl:
-            "https://res.cloudinary.com/practicaldev/image/fetch/s--uigxYVRB--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/187971/a5359a24-b652-46be-8898-2c5df32aa6e0.png",
-          fullName: "Keff",
-        }}
-        createdAt={"12 июня 2022 г."}
-        viewsCount={150}
+        id={data._id}
+        title={data.title}
+        imageUrl={data.imageUrl}
+        user={data.user}
+        createdAt={data.createdAt}
+        viewsCount={data.viewsCount}
         commentsCount={3}
-        tags={["react", "fun", "typescript"]}
+        tags={data.tags}
         isFullPost
       >
         <p>
-          Hey there! 👋 I'm starting a new series called "Roast the Code", where
-          I will share some code, and let YOU roast and improve it. There's not
-          much more to it, just be polite and constructive, this is an exercise
-          so we can all learn together. Now then, head over to the repo and
-          roast as hard as you can!!
+          {data.text}
         </p>
       </Post>
       <CommentsBlock
         items={[
           {
             user: {
-              fullName: "Вася Пупкин",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
+              fullName: "Іван Франко",
+              avatarUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/%D0%86%D0%B2%D0%B0%D0%BD_%D0%AF%D0%BA%D0%BE%D0%B2%D0%B8%D1%87_%D0%A4%D1%80%D0%B0%D0%BD%D0%BA%D0%BE.jpg/267px-%D0%86%D0%B2%D0%B0%D0%BD_%D0%AF%D0%BA%D0%BE%D0%B2%D0%B8%D1%87_%D0%A4%D1%80%D0%B0%D0%BD%D0%BA%D0%BE.jpg",
             },
-            text: "Это тестовый комментарий 555555",
+            text: "Джеджалик",
           },
           {
             user: {
-              fullName: "Иван Иванов",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
+              fullName: "Іван Мельник",
+              avatarUrl: "https://malevich.evo.run/img?url=https://images.crafta.ua/products/4677722",
             },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
+            text: "why?",
           },
         ]}
         isLoading={false}
