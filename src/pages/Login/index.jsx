@@ -22,7 +22,7 @@ export const Login = () => {
   // const isAuth = Boolean(useSelector(state => state.auth.data))
   const isAuth = useSelector(isAuthSelector)
 
-  const { register, handleSubmit, setError, formState: { errors, isValid } } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm({
     defaultValues: {
       email: 'm.rudeeenko@gmail.com',
       password: '01234567'
@@ -69,7 +69,7 @@ export const Login = () => {
           {...register('password', { required: "Вкажіть пароль" })}
           fullWidth />
 
-        <Button type='submit' size="large" variant="contained" fullWidth>
+        <Button disabled={!isValid} type='submit' size="large" variant="contained" fullWidth>
           Вхід
         </Button>
       </form>

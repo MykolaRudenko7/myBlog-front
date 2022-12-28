@@ -3,12 +3,11 @@ import React from "react";
 import { Route, Routes } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { isAuthSelector } from '../src/redax/slices/authSlice';
+import { fetchAuthMe, isAuthSelector } from '../src/redax/slices/authSlice';
 
 
 import { Header } from "./components";
 import { AddPost, FullPost, Home, Login, Registration } from "./pages";
-import { fetchAuthMe } from "./redax/slices/authSlice";
 //
 //
 //
