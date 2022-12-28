@@ -1,14 +1,14 @@
-import React from 'react';
 import Grid from '@mui/material/Grid';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchPosts, fetchTags } from '../redax/slices/postsSlice';
 
 import { CommentsBlock } from '../components/CommentsBlock';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
-import { fetchPosts, fetchTags } from '../redax/slices/postsSlice';
 //
 //
 //
@@ -16,6 +16,8 @@ import { fetchPosts, fetchTags } from '../redax/slices/postsSlice';
 //
 export const Home = () => {
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.data)
+
   const { posts, tags } = useSelector(state => state.posts) //витягую пости і теги
 
   const isPostLoading = posts.status === 'loading'; // чи грузяться пости
@@ -39,7 +41,6 @@ export const Home = () => {
             isPostLoading
               ? (<Post key={index} isLoading={true} />)
               : (<Post
-                // key={obj._id}
                 id={obj._id}
                 title={obj.title}
                 imageUrl={obj.imageUrl}
@@ -48,7 +49,7 @@ export const Home = () => {
                 viewsCount={obj.viewsCount}
                 commentsCount={3}
                 tags={obj.tags}
-                isEditable
+                isEditable={userData?._id === obj.user._id}
               />)
           ))}
         </Grid>

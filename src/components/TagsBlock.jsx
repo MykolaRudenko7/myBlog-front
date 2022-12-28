@@ -22,6 +22,7 @@ export const TagsBlock = ({ items, isLoading = true }) => {
           <a
             style={{ textDecoration: "none", color: "black" }}
             href={`/tags/${name}`}
+            key={i}
           >
             <ListItem key={i} disablePadding>
               <ListItemButton>
