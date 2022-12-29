@@ -19,16 +19,19 @@ import styles from './AddPost.module.scss';
 //
 //
 export const AddPost = () => {
-  const {id} = useParams();
   const navigate = useNavigate();
   const isAuth = useSelector(isAuthSelector)
+  const { id } = useParams();
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState('');
   const [text, setText] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
+
   const inputFileRef = React.useRef(null);
+  const isEditing = Boolean(id)
+
 
   const handleChangeFile = async (e) => {
     try {
@@ -62,8 +65,15 @@ export const AddPost = () => {
         tags,
         text,
       }
-      const { data } = await axios.post('/posts', fields)
-      const id = data._id
+
+      const { data } = isEditing
+        ? await axios.patch(`/posts/${id}`, fields)
+        : await axios.post('/posts', fields)
+
+      const _id = isEditing
+        ? id
+        : data._id
+
       navigate(`/posts/${id}`)
     } catch (error) {
       console.log('Error:', error);
@@ -71,9 +81,9 @@ export const AddPost = () => {
     }
   }
 
-  React.useEffect(()=> {
+  React.useEffect(() => {
     if (id) {
-      axios.get(`/posts/${id}`).then(({data}) => {
+      axios.get(`/posts/${id}`).then(({ data }) => {
         setTitle(data.title)
         setText(data.text)
         setTags(data.tags.join(','))
@@ -87,7 +97,7 @@ export const AddPost = () => {
       spellChecker: false,
       maxHeight: '400px',
       autofocus: true,
-      placeholder: 'Введите текст...',
+      placeholder: 'Введіть текст...',
       status: false,
       autosave: {
         enabled: true,
@@ -143,7 +153,7 @@ export const AddPost = () => {
       <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button onClick={onSubmit} size="large" variant="contained">
-          Опублікувати
+          {isEditing ? 'Зберегти' : 'Опублікувати'}
         </Button>
         <a href="/">
           <Button size="large">Відміна</Button>

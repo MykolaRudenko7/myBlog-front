@@ -41,6 +41,7 @@ export const Home = () => {
             isPostLoading
               ? (<Post key={index} isLoading={true} />)
               : (<Post
+                key={obj._id}
                 id={obj._id}
                 title={obj.title}
                 imageUrl={obj.imageUrl ? `http://localhost:7777${obj.imageUrl}` : ''}
