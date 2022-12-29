@@ -5,7 +5,7 @@ import axios from "axios";
 //
 //
 const instance = axios.create({
-	baseURL: 'http://localhost:7777'
+	baseURL: process.env.REACT_APP_API_URL
 })
 
 // ф-ція перевіряє чи є токін
