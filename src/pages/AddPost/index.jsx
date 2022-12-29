@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
 
 import Button from '@mui/material/Button';
@@ -19,11 +19,12 @@ import styles from './AddPost.module.scss';
 //
 //
 export const AddPost = () => {
-  const navigate = useNavigate()
+  const {id} = useParams();
+  const navigate = useNavigate();
   const isAuth = useSelector(isAuthSelector)
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [imageUrl, setImmageUrl] = React.useState('');
+  const [imageUrl, setImageUrl] = React.useState('');
   const [text, setText] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
@@ -35,7 +36,7 @@ export const AddPost = () => {
       const file = e.target.files[0]
       formData.append('image', file)
       const { data } = await axios.post('/upload', formData);
-      setImmageUrl(data.url)
+      setImageUrl(data.url)
     } catch (error) {
       console.log('Error', error)
       alert('Помилка при завантаженні файлу')
@@ -44,7 +45,7 @@ export const AddPost = () => {
 
   const onClickRemoveImage = () => {
     if (window.confirm("Ви дійсно хочете видалити прев'ю?"))
-      setImmageUrl('')
+      setImageUrl('')
   };
 
   const onChange = React.useCallback((text) => {
@@ -58,7 +59,7 @@ export const AddPost = () => {
       const fields = {
         title,
         imageUrl,
-        tags: tags.split(','),
+        tags,
         text,
       }
       const { data } = await axios.post('/posts', fields)
@@ -69,6 +70,17 @@ export const AddPost = () => {
       alert('Помилка при створенні статті')
     }
   }
+
+  React.useEffect(()=> {
+    if (id) {
+      axios.get(`/posts/${id}`).then(({data}) => {
+        setTitle(data.title)
+        setText(data.text)
+        setTags(data.tags.join(','))
+        setImageUrl(data.imageUrl)
+      })
+    }
+  }, [])
 
   const options = React.useMemo(
     () => ({
